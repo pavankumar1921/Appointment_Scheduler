@@ -166,10 +166,12 @@ app.get(
     const loggedInUser = request.user.id;
     const user = await User.findByPk(loggedInUser);
     const userName = user.dataValues.firstName;
+    const allAppointments = await Appointment.getAppointments();
     if (request.accepts("html")) {
       response.render("appointment", {
         title: "Manage Appointments",
         userName,
+        allAppointments,
         csrfToken: request.csrfToken(),
       });
     } else {

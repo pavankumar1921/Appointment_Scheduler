@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
         userId,
       });
     }
+    static getAppointments() {
+      return this.findAll();
+    }
   }
   Appointment.init(
     {
