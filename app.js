@@ -15,7 +15,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
-const { User } = require("./models");
+const { User, Appointment } = require("./models");
 // eslint-disable-next-line no-unused-vars
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
@@ -174,6 +174,25 @@ app.get(
       });
     } else {
       response.json({ userName });
+    }
+  }
+);
+
+app.post(
+  "/appointments",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      await Appointment.addAppointment({
+        title: request.body.title,
+        start: request.body.start,
+        end: request.body.end,
+        userId: request.user.id,
+      });
+      return response.redirect("/appointment");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
     }
   }
 );

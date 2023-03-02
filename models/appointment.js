@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static addAppointment({ title, start, end, userId }) {
+      return this.create({
+        title: title,
+        start: start,
+        end: end,
+        userId,
+      });
+    }
   }
   Appointment.init(
     {
