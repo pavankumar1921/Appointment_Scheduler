@@ -6,7 +6,7 @@ var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 const path = require("path");
 const passport = require("passport");
-//const connectEnsureLogin = require("connect-ensure-login");
+const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const flash = require("connect-flash");
@@ -158,5 +158,24 @@ app.get("/signout", (request, response, next) => {
     response.redirect("/");
   });
 });
+
+app.get(
+  "/appointment",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const loggedInUser = request.user.id;
+    const user = await User.findByPk(loggedInUser);
+    const userName = user.dataValues.firstName;
+    if (request.accepts("html")) {
+      response.render("appointment", {
+        title: "Manage Appointments",
+        userName,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({ userName });
+    }
+  }
+);
 
 module.exports = app;
