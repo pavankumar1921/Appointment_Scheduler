@@ -16,9 +16,49 @@
         <h5 class="text-4xl flex items-center">Welcome <%= userName %></h5>
         <br>
         <a href="/signout" class="bg-red-600 text-white px-4 py-1 rounded font-medium mr-2 mb-2" > Signout</a>
-        <form action="" method="post">
+        <br>
+        <br>
+        <p>Manage your appointments</p>
+        <form action="/appointments" method="post">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 py-4">
+            <div class="flex-auto">
+                <label for="title">Appointment :</label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Enter your appointment..."
+                  class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm"
+                  required
+                />
+              </div>
+              <div class="flex-auto">
+                <label for="start">Start time :</label>
+                <input
+                  type="time"
+                  name="start"
+                  class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
+                  required
+                />
+              </div>
+              <div class="flex-auto">
+                <label for="start">End time :</label>
+                <input
+                  type="time"
+                  name="end"
+                  class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
+                  required
+                />
+              </div>
+              <div class="flex-none">
+                <br>
+                <button
+                  type="submit"
+                  class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 mb-2"
+                >
+                Add
+                </button>
+              </div>
           </div>
         </form>
         <% if(messages && messages.error && messages.error.length > 0)  { %>
