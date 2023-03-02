@@ -166,7 +166,7 @@ app.get(
     const loggedInUser = request.user.id;
     const user = await User.findByPk(loggedInUser);
     const userName = user.dataValues.firstName;
-    const allAppointments = await Appointment.getAppointments();
+    const allAppointments = await Appointment.getAppointments(loggedInUser);
     if (request.accepts("html")) {
       response.render("appointment", {
         title: "Manage Appointments",
@@ -175,7 +175,7 @@ app.get(
         csrfToken: request.csrfToken(),
       });
     } else {
-      response.json({ userName });
+      response.json({ userName, allAppointments });
     }
   }
 );
@@ -198,5 +198,15 @@ app.post(
     }
   }
 );
+
+app.get("/appointments/:id", async function (request, response) {
+  try {
+    const appointment = await Appointment.findByPk(request.params.id);
+    return response.json(appointment);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
 
 module.exports = app;
