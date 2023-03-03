@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           userId,
         },
-        order: [["id", "ASC"]],
+        order: [["start", "ASC"]],
       });
     }
     static deleteAppointment(id) {
@@ -34,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           id,
         },
+      });
+    }
+    static editAppointment(id, title) {
+      return this.update({
+        where: {
+          id,
+        },
+        title,
       });
     }
   }

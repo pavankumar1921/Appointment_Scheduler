@@ -199,16 +199,6 @@ app.post(
   }
 );
 
-app.get("/appointments/:id", async function (request, response) {
-  try {
-    const appointment = await Appointment.findByPk(request.params.id);
-    return response.json(appointment);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
 app.delete(
   "/appointments/:id/delete",
   connectEnsureLogin.ensureLoggedIn(),
@@ -219,6 +209,39 @@ app.delete(
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/appointments/:id/edit",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const appointment = await Appointment.findByPk(request.params.id);
+    response.render("edit-appointment", {
+      title: "Edit appointment",
+      appointment: appointment,
+      id: request.params.id,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/appointments/:id/edit",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      console.log(request.user.id);
+      const appointment = await Appointment.findByPk(request.params.id);
+      await Appointment.editAppointment({
+        id: appointment.id,
+        title: request.body.title,
+      });
+      response.redirect(`/appointments`);
+    } catch (error) {
+      console.log(error);
+      return;
     }
   }
 );
