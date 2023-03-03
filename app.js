@@ -209,4 +209,18 @@ app.get("/appointments/:id", async function (request, response) {
   }
 });
 
+app.delete(
+  "/appointments/:id/delete",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const res = await Appointment.deleteAppointment(request.params.id);
+      return response.json({ success: res === 1 });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
 module.exports = app;

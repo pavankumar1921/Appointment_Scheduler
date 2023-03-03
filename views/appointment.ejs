@@ -27,6 +27,22 @@
       background-color: #dddddd;
     }
     </style>
+    <script>
+      var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+      function deleteAppointment(id) {
+          fetch(`/appointments/${id}/delete`, {
+              method: "delete",
+              headers: {"Content-Type":"application/json"},
+              body: JSON.stringify({
+                  "_csrf":token
+              })
+          }).then((res)=>{
+              if (res.ok) {
+                  window.location.reload();
+              }
+          }).catch((err)=> console.error(err))
+      }
+  </script>
   <body >
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
@@ -76,7 +92,7 @@
                 Add
                 </button>
               </div>
-          </div>
+          </div>               
             <table border="5">
                 <tr>
                   <th>Appointment</th>
@@ -90,10 +106,12 @@
                     <td><%= allAppointments[i].title %></td>
                     <td><%= allAppointments[i].start %></td>
                     <td><%= allAppointments[i].end %></td> 
-                    <td>Edit</td>
-                    <td>Delete</td>
+                    <td><a href="/appointments/<%=allAppointments[i].id%>/edit"></a>
+                      Edit</td>
+                    <td><a onclick="deleteAppointment(<%=allAppointments[i].id%>)" class="text-sm cursor-pointer">Delete</a>
+                      </td>
                   </tr>
-                <% } %>
+                <% }  %>
               </table>
         </form>
         <% if(messages && messages.error && messages.error.length > 0)  { %>

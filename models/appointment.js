@@ -29,6 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
+    static deleteAppointment(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
   }
   Appointment.init(
     {
