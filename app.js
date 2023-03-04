@@ -304,7 +304,7 @@ app.post(
       console.log(request.user.id);
       const appointment = await Appointment.findByPk(request.params.id);
       await Appointment.editAppointment(request.params.id, request.body.title);
-      response.redirect(`/appointments`);
+      response.redirect(`/appointment`);
     } catch (error) {
       console.log(error);
       return;

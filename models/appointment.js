@@ -37,12 +37,14 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static editAppointment(id, title) {
-      return this.update({
-        where: {
-          id,
-        },
-        title,
-      });
+      return this.update(
+        { title: title },
+        {
+          where: {
+            id,
+          },
+        }
+      );
     }
   }
   Appointment.init(
