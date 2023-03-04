@@ -181,38 +181,24 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     let startTime = request.body.start;
-    let Stime = new Date("January 1, 2000 " + startTime);
-    let Shours = Stime.getHours();
-    let Sminutes = Stime.getMinutes();
     let endTime = request.body.end;
-    let etime = new Date("January 1, 2000 " + endTime);
-    let ehours = etime.getHours();
-    let eminutes = Stime.getMinutes();
     const allAppointments = await Appointment.getAppointments(request.user.id);
     for (var i = 0; i < allAppointments.length; i++) {
       let appstartTime = allAppointments[i].start;
-      let appStime = new Date("January 1, 2000 " + appstartTime);
-      let apphours = appStime.getHours();
-      let appminutes = appStime.getMinutes();
       let appendTime = allAppointments[i].end;
-      let appetime = new Date("January 1, 2000 " + appendTime);
-      let appehours = appetime.getHours();
-      let appeminutes = appetime.getMinutes();
-      console.log(request.body.title);
       if (
-        (Shours >= apphours &&
-          ehours <= appehours &&
-          Sminutes >= appminutes &&
-          eminutes <= appeminutes) ||
-        (Shours <= apphours &&
-          ehours >= appehours &&
-          Sminutes <= appminutes &&
-          eminutes >= appeminutes) ||
-        (Shours === apphours &&
-          ehours === appehours &&
-          Sminutes >= appminutes &&
-          eminutes <= appeminutes) ||
-        (Shours <= apphours && eminutes >= appehours)
+        (startTime < appstartTime &&
+          endTime > appstartTime &&
+          endTime < appendTime &&
+          endTime < appstartTime) ||
+        (startTime < appendTime &&
+          startTime < appstartTime &&
+          endTime > appendTime) ||
+        (startTime > appstartTime &&
+          startTime < appendTime &&
+          endTime > appstartTime &&
+          endTime < appendTime) ||
+        (startTime <= appstartTime && endTime >= appendTime)
       ) {
         return response.render("deleteORsuggest", {
           title: request.body.title,
@@ -241,38 +227,24 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     let startTime = request.body.start;
-    let Stime = new Date("January 1, 2000 " + startTime);
-    let Shours = Stime.getHours();
-    let Sminutes = Stime.getMinutes();
     let endTime = request.body.end;
-    let etime = new Date("January 1, 2000 " + endTime);
-    let ehours = etime.getHours();
-    let eminutes = Stime.getMinutes();
     const allAppointments = await Appointment.getAppointments(request.user.id);
     for (var i = 0; i < allAppointments.length; i++) {
       let appstartTime = allAppointments[i].start;
-      let appStime = new Date("January 1, 2000 " + appstartTime);
-      let apphours = appStime.getHours();
-      let appminutes = appStime.getMinutes();
       let appendTime = allAppointments[i].end;
-      let appetime = new Date("January 1, 2000 " + appendTime);
-      let appehours = appetime.getHours();
-      let appeminutes = appetime.getMinutes();
-      console.log(request.body.title);
       if (
-        (Shours >= apphours &&
-          ehours <= appehours &&
-          Sminutes >= appminutes &&
-          eminutes <= appeminutes) ||
-        (Shours <= apphours &&
-          ehours >= appehours &&
-          Sminutes <= appminutes &&
-          eminutes >= appeminutes) ||
-        (Shours === apphours &&
-          ehours === appehours &&
-          Sminutes >= appminutes &&
-          eminutes <= appeminutes) ||
-        (Shours <= apphours && eminutes >= appehours)
+        (startTime < appstartTime &&
+          endTime > appstartTime &&
+          endTime < appendTime &&
+          endTime < appstartTime) ||
+        (startTime < appendTime &&
+          startTime < appstartTime &&
+          endTime > appendTime) ||
+        (startTime > appstartTime &&
+          startTime < appendTime &&
+          endTime > appstartTime &&
+          endTime < appendTime) ||
+        (startTime <= appstartTime && endTime >= appendTime)
       ) {
         await Appointment.deleteAppointment(allAppointments[i].id);
         try {
@@ -324,7 +296,6 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     try {
-      console.log(request.user.id);
       await Appointment.editAppointment(request.params.id, request.body.title);
       response.redirect(`/appointment`);
     } catch (error) {
