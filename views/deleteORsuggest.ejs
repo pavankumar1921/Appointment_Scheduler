@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content= "<%= csrfToken %>">
     <title>Replace Or Suggest</title>
 </head>
 <body>
     <form action="/override" method="post">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <input type="hidden" name="title" value="<%= title %>">
         <input type="hidden" name="start" value="<%= start %>">
         <input type="hidden" name="end" value="<%= end %>">
-        <button type="Submit">Override</button>
+        <button type="Submit">Replace</button>
         </form>
 </body>
 </html>

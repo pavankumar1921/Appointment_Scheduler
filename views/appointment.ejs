@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link href="./css/style.css" rel="stylesheet" />
     <title><%= title %></title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,29 +27,16 @@
     }
     </style>
     <script>
-      var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+      var token = document.querySelector().getAttribute("content");
       function deleteAppointment(id) {
           fetch(`/appointments/${id}/delete`, {
               method: "delete",
               headers: {"Content-Type":"application/json"},
-              body: JSON.stringify({
-                  "_csrf":token
-              })
           }).then((res)=>{
               if (res.ok) {
                   window.location.reload();
               }
           }).catch((err)=> console.error(err))
-      }
-      function buttonClickFunc(){
-    fetch(`/appointments`, {
-        method: "post",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            buttonClicked: true,
-            "_csrf": token
-        })
-        })
       }
   </script>
   <body >
@@ -63,7 +49,6 @@
         <br>
         <p>Manage your appointments</p>
         <form action="/appointments" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="flex gap-2 py-4">
             <div class="flex-auto">
                 <label for="title">Appointment :</label>

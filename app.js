@@ -1,5 +1,4 @@
 const express = require("express"); //importing express
-var csrf = require("tiny-csrf");
 const app = express(); // creating new application
 const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
@@ -21,7 +20,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 //SET EJS AS VIEW ENGINE
 app.use(cookieParser("shh! some secrete string"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 app.set("view engine", "ejs");
 app.use(
   session({
@@ -84,7 +82,6 @@ app.get("/", async (request, response) => {
   } else {
     return response.render("index", {
       title: "Application Scheduler",
-      csrfToken: request.csrfToken(),
     });
   }
 });
@@ -92,7 +89,6 @@ app.get("/", async (request, response) => {
 app.get("/signup", (request, response) => {
   response.render("signup", {
     title: "Signup",
-    csrfToken: request.csrfToken(),
   });
 });
 
@@ -136,7 +132,7 @@ app.post("/users", async (request, response) => {
 });
 
 app.get("/login", (request, response) => {
-  response.render("login", { title: "Login", csrfToken: request.csrfToken() });
+  response.render("login", { title: "Login" });
 });
 
 app.post(
@@ -173,7 +169,6 @@ app.get(
         userId: loggedInUser,
         userName,
         allAppointments,
-        csrfToken: request.csrfToken(),
       });
     } else {
       response.json({ userName, allAppointments });
@@ -214,7 +209,6 @@ app.post(
           title: request.body.title,
           start: request.body.start,
           end: request.body.end,
-          csrfToken: request.csrfToken(),
         });
       }
     }
@@ -263,6 +257,18 @@ app.post(
         (eminutes >= appeminutes || eminutes <= appeminutes)
       ) {
         await Appointment.deleteAppointment(allAppointments[i].id);
+        try {
+          await Appointment.addAppointment({
+            title: request.body.title,
+            start: request.body.start,
+            end: request.body.end,
+            userId: request.user.id,
+          });
+          return response.redirect("/appointment");
+        } catch (error) {
+          console.log(error);
+          return response.status(422).json(error);
+        }
       }
     }
   }
@@ -291,7 +297,6 @@ app.get(
       title: "Edit appointment",
       appointment: appointment,
       id: request.params.id,
-      csrfToken: request.csrfToken(),
     });
   }
 );
