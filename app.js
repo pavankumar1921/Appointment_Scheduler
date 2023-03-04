@@ -184,8 +184,10 @@ app.post(
     let endTime = request.body.end;
     const allAppointments = await Appointment.getAppointments(request.user.id);
     for (var i = 0; i < allAppointments.length; i++) {
-      let appstartTime = allAppointments[i].start;
-      let appendTime = allAppointments[i].end;
+      let x = allAppointments[i].start;
+      let y = allAppointments[i].end;
+      let appstartTime = x.slice(0, 5);
+      let appendTime = y.slice(0, 5);
       if (
         (startTime < appstartTime &&
           endTime > appstartTime &&
@@ -230,8 +232,10 @@ app.post(
     let endTime = request.body.end;
     const allAppointments = await Appointment.getAppointments(request.user.id);
     for (var i = 0; i < allAppointments.length; i++) {
-      let appstartTime = allAppointments[i].start;
-      let appendTime = allAppointments[i].end;
+      let x = allAppointments[i].start;
+      let y = allAppointments[i].end;
+      let appstartTime = x.slice(0, 5);
+      let appendTime = y.slice(0, 5);
       if (
         (startTime < appstartTime &&
           endTime > appstartTime &&

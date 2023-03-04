@@ -50,8 +50,8 @@ module.exports = (sequelize, DataTypes) => {
   Appointment.init(
     {
       title: DataTypes.STRING,
-      start: DataTypes.STRING,
-      end: DataTypes.STRING,
+      start: DataTypes.TIME,
+      end: DataTypes.TIME,
     },
     {
       sequelize,
