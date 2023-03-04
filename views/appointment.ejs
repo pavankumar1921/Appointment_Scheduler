@@ -40,12 +40,11 @@
       }
   </script>
   <body >
+    <%- include('heading.ejs') %>
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
+        <br>
         <h5 class="text-4xl flex items-center">Welcome <%= userName %></h5>
-        <br>
-        <a href="/signout" class="bg-red-600 text-white px-4 py-1 rounded font-medium mr-2 mb-2" > Signout</a>
-        <br>
         <br>
         <p>Manage your appointments</p>
         <form action="/appointments" method="post">

@@ -7,6 +7,7 @@
     <title>Replace Or Suggest</title>
 </head>
 <body>
+    <%- include('heading.ejs') %>
         <div class="grid grid-cols-6">
             <div class="col-start-3 col-span-2">
                 <form action="/override" method="post">
@@ -14,8 +15,8 @@
                     <input type="hidden" name="start" value="<%= start %>">
                     <input type="hidden" name="end" value="<%= end %>">
                     <p>Already appointment exists in the given time. Do you want to delete the old appointment and replace with new appointment?</p>
-                    <button type="Submit">Replace</button>
-                    <a href="/appointment">Cancel</a>
+                    <button type="Submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Replace</button>
+                    <a href="/appointment" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-5 py-2">Cancel</a>
                 </form>
             </div>
         </div>
