@@ -200,10 +200,19 @@ app.post(
       let appeminutes = appetime.getMinutes();
       console.log(request.body.title);
       if (
-        Shours <= apphours &&
-        (Sminutes >= appminutes || Sminutes <= appminutes) &&
-        ehours <= appehours &&
-        (eminutes >= appeminutes || eminutes <= appeminutes)
+        (Shours >= apphours &&
+          ehours <= appehours &&
+          Sminutes >= appminutes &&
+          eminutes <= appeminutes) ||
+        (Shours <= apphours &&
+          ehours >= appehours &&
+          Sminutes <= appminutes &&
+          eminutes >= appeminutes) ||
+        (Shours === apphours &&
+          ehours === appehours &&
+          Sminutes >= appminutes &&
+          eminutes <= appeminutes) ||
+        (Shours <= apphours && eminutes >= appehours)
       ) {
         return response.render("deleteORsuggest", {
           title: request.body.title,
@@ -251,10 +260,19 @@ app.post(
       let appeminutes = appetime.getMinutes();
       console.log(request.body.title);
       if (
-        Shours <= apphours &&
-        (Sminutes >= appminutes || Sminutes <= appminutes) &&
-        ehours <= appehours &&
-        (eminutes >= appeminutes || eminutes <= appeminutes)
+        (Shours >= apphours &&
+          ehours <= appehours &&
+          Sminutes >= appminutes &&
+          eminutes <= appeminutes) ||
+        (Shours <= apphours &&
+          ehours >= appehours &&
+          Sminutes <= appminutes &&
+          eminutes >= appeminutes) ||
+        (Shours === apphours &&
+          ehours === appehours &&
+          Sminutes >= appminutes &&
+          eminutes <= appeminutes) ||
+        (Shours <= apphours && eminutes >= appehours)
       ) {
         await Appointment.deleteAppointment(allAppointments[i].id);
         try {
@@ -307,7 +325,6 @@ app.post(
   async (request, response) => {
     try {
       console.log(request.user.id);
-      const appointment = await Appointment.findByPk(request.params.id);
       await Appointment.editAppointment(request.params.id, request.body.title);
       response.redirect(`/appointment`);
     } catch (error) {

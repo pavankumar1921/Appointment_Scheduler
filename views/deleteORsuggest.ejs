@@ -7,11 +7,17 @@
     <title>Replace Or Suggest</title>
 </head>
 <body>
-    <form action="/override" method="post">
-        <input type="hidden" name="title" value="<%= title %>">
-        <input type="hidden" name="start" value="<%= start %>">
-        <input type="hidden" name="end" value="<%= end %>">
-        <button type="Submit">Replace</button>
-        </form>
+        <div class="grid grid-cols-6">
+            <div class="col-start-3 col-span-2">
+                <form action="/override" method="post">
+                    <input type="hidden" name="title" value="<%= title %>">
+                    <input type="hidden" name="start" value="<%= start %>">
+                    <input type="hidden" name="end" value="<%= end %>">
+                    <p>Already appointment exists in the given time. Do you want to delete the old appointment and replace with new appointment?</p>
+                    <button type="Submit">Replace</button>
+                    <a href="/appointment">Cancel</a>
+                </form>
+            </div>
+        </div>
 </body>
 </html>
