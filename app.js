@@ -170,6 +170,7 @@ app.get(
     if (request.accepts("html")) {
       response.render("appointment", {
         title: "Manage Appointments",
+        userId: loggedInUser,
         userName,
         allAppointments,
         csrfToken: request.csrfToken(),
@@ -184,6 +185,39 @@ app.post(
   "/appointments",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    let startTime = request.body.start;
+    let Stime = new Date("January 1, 2000 " + startTime);
+    let Shours = Stime.getHours();
+    let Sminutes = Stime.getMinutes();
+    let endTime = request.body.end;
+    let etime = new Date("January 1, 2000 " + endTime);
+    let ehours = etime.getHours();
+    let eminutes = Stime.getMinutes();
+    const allAppointments = await Appointment.getAppointments(request.user.id);
+    for (var i = 0; i < allAppointments.length; i++) {
+      let appstartTime = allAppointments[i].start;
+      let appStime = new Date("January 1, 2000 " + appstartTime);
+      let apphours = appStime.getHours();
+      let appminutes = appStime.getMinutes();
+      let appendTime = allAppointments[i].end;
+      let appetime = new Date("January 1, 2000 " + appendTime);
+      let appehours = appetime.getHours();
+      let appeminutes = appetime.getMinutes();
+      console.log(request.body.title);
+      if (
+        Shours <= apphours &&
+        (Sminutes >= appminutes || Sminutes <= appminutes) &&
+        ehours <= appehours &&
+        (eminutes >= appeminutes || eminutes <= appeminutes)
+      ) {
+        return response.render("deleteORsuggest", {
+          title: request.body.title,
+          start: request.body.start,
+          end: request.body.end,
+          csrfToken: request.csrfToken(),
+        });
+      }
+    }
     try {
       await Appointment.addAppointment({
         title: request.body.title,
@@ -195,6 +229,41 @@ app.post(
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
+    }
+  }
+);
+
+app.post(
+  "/override",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    let startTime = request.body.start;
+    let Stime = new Date("January 1, 2000 " + startTime);
+    let Shours = Stime.getHours();
+    let Sminutes = Stime.getMinutes();
+    let endTime = request.body.end;
+    let etime = new Date("January 1, 2000 " + endTime);
+    let ehours = etime.getHours();
+    let eminutes = Stime.getMinutes();
+    const allAppointments = await Appointment.getAppointments(request.user.id);
+    for (var i = 0; i < allAppointments.length; i++) {
+      let appstartTime = allAppointments[i].start;
+      let appStime = new Date("January 1, 2000 " + appstartTime);
+      let apphours = appStime.getHours();
+      let appminutes = appStime.getMinutes();
+      let appendTime = allAppointments[i].end;
+      let appetime = new Date("January 1, 2000 " + appendTime);
+      let appehours = appetime.getHours();
+      let appeminutes = appetime.getMinutes();
+      console.log(request.body.title);
+      if (
+        Shours <= apphours &&
+        (Sminutes >= appminutes || Sminutes <= appminutes) &&
+        ehours <= appehours &&
+        (eminutes >= appeminutes || eminutes <= appeminutes)
+      ) {
+        await Appointment.deleteAppointment(allAppointments[i].id);
+      }
     }
   }
 );
@@ -234,10 +303,7 @@ app.post(
     try {
       console.log(request.user.id);
       const appointment = await Appointment.findByPk(request.params.id);
-      await Appointment.editAppointment({
-        id: appointment.id,
-        title: request.body.title,
-      });
+      await Appointment.editAppointment(request.params.id, request.body.title);
       response.redirect(`/appointments`);
     } catch (error) {
       console.log(error);
