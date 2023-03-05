@@ -182,31 +182,45 @@ app.post(
   async (request, response) => {
     let startTime = request.body.start;
     let endTime = request.body.end;
+    const Rtime1 = new Date("2023-03-04T" + startTime + "Z");
+    const Rtime2 = new Date("2023-03-04T" + endTime + "Z");
+    const diffInMilliseconds = Math.abs(Rtime2.getTime() - Rtime1.getTime());
+    const RdiffInMinutes = Math.floor(diffInMilliseconds / 1000 / 60);
+    console.log(RdiffInMinutes);
     const allAppointments = await Appointment.getAppointments(request.user.id);
     for (var i = 0; i < allAppointments.length; i++) {
-      let x = allAppointments[i].start;
-      let y = allAppointments[i].end;
-      let appstartTime = x.slice(0, 5);
-      let appendTime = y.slice(0, 5);
-      if (
-        (startTime < appstartTime &&
-          endTime > appstartTime &&
-          endTime < appendTime &&
-          endTime < appstartTime) ||
-        (startTime < appendTime &&
-          startTime < appstartTime &&
-          endTime > appendTime) ||
-        (startTime > appstartTime &&
-          startTime < appendTime &&
-          endTime > appstartTime &&
-          endTime < appendTime) ||
-        (startTime <= appstartTime && endTime >= appendTime)
-      ) {
-        return response.render("deleteORsuggest", {
-          title: request.body.title,
-          start: request.body.start,
-          end: request.body.end,
-        });
+      for (var j = 1; j < allAppointments.length; j++) {
+        let x = allAppointments[i].start;
+        let y = allAppointments[i].end;
+        let z = allAppointments[j].start;
+        let appstartTime = x.slice(0, 5);
+        let appendTime = y.slice(0, 5);
+        let comp = z.slice(0, 5);
+        const time1 = new Date("2023-03-04T" + appstartTime + "Z");
+        const time2 = new Date("2023-03-04T" + comp + "Z");
+        const diffInMilliseconds = Math.abs(time2.getTime() - time1.getTime());
+        const appdiffInMinutes = Math.floor(diffInMilliseconds / 1000 / 60);
+        console.log(appdiffInMinutes);
+        console.log(comp);
+        if (
+          (startTime < appstartTime &&
+            appstartTime < endTime &&
+            endTime < appendTime) ||
+          (appstartTime < startTime &&
+            startTime < appendTime &&
+            appendTime < endTime) ||
+          (appstartTime < endTime &&
+            endTime < appendTime &&
+            appstartTime < startTime &&
+            startTime < appendTime) ||
+          (startTime <= appstartTime && appendTime <= endTime)
+        ) {
+          return response.render("deleteORsuggest", {
+            title: request.body.title,
+            start: request.body.start,
+            end: request.body.end,
+          });
+        }
       }
     }
     try {

@@ -98,8 +98,8 @@
                 <% for(var i = 0; i < allAppointments.length; i++) { %>
                   <tr>
                     <td><%= allAppointments[i].title %></td>
-                    <td><%= allAppointments[i].start %></td>
-                    <td><%= allAppointments[i].end %></td> 
+                    <td><%= (allAppointments[i].start).slice(0,5) %></td>
+                    <td><%= (allAppointments[i].end).slice(0,5) %></td> 
                     <td><a href="/appointments/<%=allAppointments[i].id%>/edit">Edit</a>
                       </td>
                     <td><a onclick="deleteAppointment(<%=allAppointments[i].id%>)" class="text-sm cursor-pointer">Delete</a>
