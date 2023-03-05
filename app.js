@@ -245,6 +245,7 @@ app.post(
     let startTime = request.body.start;
     let endTime = request.body.end;
     const allAppointments = await Appointment.getAppointments(request.user.id);
+    let overlap = [];
     for (var i = 0; i < allAppointments.length; i++) {
       let x = allAppointments[i].start;
       let y = allAppointments[i].end;
@@ -252,32 +253,34 @@ app.post(
       let appendTime = y.slice(0, 5);
       if (
         (startTime < appstartTime &&
-          endTime > appstartTime &&
-          endTime < appendTime &&
-          endTime < appstartTime) ||
-        (startTime < appendTime &&
-          startTime < appstartTime &&
-          endTime > appendTime) ||
-        (startTime > appstartTime &&
-          startTime < appendTime &&
-          endTime > appstartTime &&
+          appstartTime < endTime &&
           endTime < appendTime) ||
-        (startTime <= appstartTime && endTime >= appendTime)
+        (appstartTime < startTime &&
+          startTime < appendTime &&
+          appendTime < endTime) ||
+        (appstartTime < endTime &&
+          endTime < appendTime &&
+          appstartTime < startTime &&
+          startTime < appendTime) ||
+        (startTime <= appstartTime && appendTime <= endTime)
       ) {
-        await Appointment.deleteAppointment(allAppointments[i].id);
-        try {
-          await Appointment.addAppointment({
-            title: request.body.title,
-            start: request.body.start,
-            end: request.body.end,
-            userId: request.user.id,
-          });
-          return response.redirect("/appointment");
-        } catch (error) {
-          console.log(error);
-          return response.status(422).json(error);
-        }
+        overlap.push(allAppointments[i]);
       }
+    }
+    for (var k = 0; k < overlap.length; k++) {
+      await Appointment.deleteAppointment(overlap[k].id);
+    }
+    try {
+      await Appointment.addAppointment({
+        title: request.body.title,
+        start: request.body.start,
+        end: request.body.end,
+        userId: request.user.id,
+      });
+      return response.redirect("/appointment");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
     }
   }
 );
