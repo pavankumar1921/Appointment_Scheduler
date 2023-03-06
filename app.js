@@ -181,6 +181,17 @@ app.post(
   "/appointments",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    if (request.body.title.length < 3) {
+      request.flash(
+        "error",
+        "Appointment title should be minimun of 3 characters!"
+      );
+      return response.redirect("/appointment");
+    }
+    if (request.body.start > request.body.end) {
+      request.flash("error", "End time should not be behind the start time!");
+      return response.redirect("/appointment");
+    }
     let startTime = request.body.start;
     let endTime = request.body.end;
     const Rtime1 = new Date("2023-03-04T" + startTime + "Z");

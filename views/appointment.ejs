@@ -111,7 +111,6 @@
         <% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
             <p class="bg-red-200 my-3 list-none rounded px-4 py-2"><%= messages.error[i] %></p>
-            <a onclick="deleteAppointment(<%=allAppointments[i].id%>); buttonClickFunc() "  class="text-sm cursor-pointer">Delete & Add</a>
           <% } %>
         <% } %>
       </div>
