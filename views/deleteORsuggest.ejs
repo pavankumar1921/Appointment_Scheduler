@@ -19,6 +19,14 @@
                     <p class="text-xl  text-black">Already appointment exists in the given time. Do you want to delete the old appointment and replace with new appointment?</p>
                     <br>
                     <button type="Submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Replace</button>
+                </form>
+                <form action="/appointments" method="post">
+                    <br>
+                    <p class="text-xl  text-black">The nearest available slot is <%= newStart %> to <%= newEnd1 %> do you want to add your appointment in this time slot?</p>
+                    <input type="hidden" name="title" value="<%= title %>">
+                    <input type="hidden" name="start" value="<%= newStart %>">
+                    <input type="hidden" name="end" value="<%= newEnd1 %>">
+                    <button type="Submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Add</button>
                     <a href="/appointment" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-5 py-2">Cancel</a>
                 </form>
             </div>

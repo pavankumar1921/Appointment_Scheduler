@@ -15,6 +15,7 @@ const saltRounds = 10;
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 const { User, Appointment } = require("./models");
+const { start } = require("repl");
 // eslint-disable-next-line no-unused-vars
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
@@ -186,41 +187,89 @@ app.post(
     const Rtime2 = new Date("2023-03-04T" + endTime + "Z");
     const diffInMilliseconds = Math.abs(Rtime2.getTime() - Rtime1.getTime());
     const RdiffInMinutes = Math.floor(diffInMilliseconds / 1000 / 60);
-    console.log(RdiffInMinutes);
     const allAppointments = await Appointment.getAppointments(request.user.id);
-    for (var i = 0; i < allAppointments.length; i++) {
-      for (var j = 1; j < allAppointments.length; j++) {
-        let x = allAppointments[i].start;
-        let y = allAppointments[i].end;
-        let z = allAppointments[j].start;
-        let appstartTime = x.slice(0, 5);
-        let appendTime = y.slice(0, 5);
-        let comp = z.slice(0, 5);
-        const time1 = new Date("2023-03-04T" + appstartTime + "Z");
-        const time2 = new Date("2023-03-04T" + comp + "Z");
-        const diffInMilliseconds = Math.abs(time2.getTime() - time1.getTime());
-        const appdiffInMinutes = Math.floor(diffInMilliseconds / 1000 / 60);
-        console.log(appdiffInMinutes);
-        console.log(comp);
-        if (
-          (startTime < appstartTime &&
-            appstartTime < endTime &&
-            endTime < appendTime) ||
-          (appstartTime < startTime &&
-            startTime < appendTime &&
-            appendTime < endTime) ||
-          (appstartTime < endTime &&
-            endTime < appendTime &&
-            appstartTime < startTime &&
-            startTime < appendTime) ||
-          (startTime <= appstartTime && appendTime <= endTime)
-        ) {
-          return response.render("deleteORsuggest", {
-            title: request.body.title,
-            start: request.body.start,
-            end: request.body.end,
-          });
-        }
+    let clash = [];
+    let diff = [];
+    for (var i = 0; i < allAppointments.length - 1; i++) {
+      let a = allAppointments[i].end;
+      let b = allAppointments[i + 1].start;
+      let end = a.slice(0, 5);
+      let start = b.slice(0, 5);
+      const time1 = new Date("2023-03-04T" + start + "Z");
+      const time2 = new Date("2023-03-04T" + end + "Z");
+      const diffInMilliseconds = Math.abs(time2.getTime() - time1.getTime());
+      const appdiffInMinutes = Math.floor(diffInMilliseconds / 1000 / 60);
+      diff.push(appdiffInMinutes);
+    }
+    for (var j = 0; j < allAppointments.length; j++) {
+      let x = allAppointments[j].start;
+      let y = allAppointments[j].end;
+      let appstartTime = x.slice(0, 5);
+      let appendTime = y.slice(0, 5);
+      console.log(
+        startTime < appstartTime &&
+          appstartTime < endTime &&
+          endTime < appendTime
+      );
+      if (
+        (startTime < appstartTime &&
+          appstartTime < endTime &&
+          endTime < appendTime) ||
+        (appstartTime <= startTime &&
+          startTime < appendTime &&
+          appendTime <= endTime) ||
+        (appstartTime < endTime &&
+          endTime < appendTime &&
+          appstartTime < startTime &&
+          startTime < appendTime) ||
+        (startTime <= appstartTime && appendTime <= endTime)
+      ) {
+        clash.push(true);
+      }
+    }
+    console.log(clash);
+    for (var k = 0; k < allAppointments.length; k++) {
+      if (clash.find((value) => Boolean(value)) && diff[k] >= RdiffInMinutes) {
+        console.log("Test1");
+        let x = allAppointments[k].end;
+        let appendTime = x.slice(0, 5);
+        const time1 = new Date("2023-03-04T" + appendTime + "Z");
+        const minutes = RdiffInMinutes;
+        const hours = Math.floor(minutes / 60);
+        const minutesToAddFinal = minutes % 60;
+        const newTime = new Date(time1);
+        newTime.setHours(time1.getHours() + hours);
+        newTime.setMinutes(time1.getMinutes() + minutesToAddFinal);
+        let newTime1 = newTime.toISOString();
+        return response.render("deleteORsuggest", {
+          title: request.body.title,
+          start: request.body.start,
+          end: request.body.end,
+          newStart: appendTime,
+          newEnd1: newTime1.slice(11, 16),
+        });
+      } else if (k + 1 === allAppointments.length && clash.length != 0) {
+        console.log("Test2");
+        let len = allAppointments.length;
+        let x = allAppointments[len - 1].end;
+        let appendTime = x.slice(0, 5);
+        const time1 = new Date("2023-03-04T" + appendTime + "Z");
+        const minutes = RdiffInMinutes;
+        const hours = Math.floor(minutes / 60);
+        const minutesToAddFinal = minutes % 60;
+        const newTime = new Date(time1);
+        newTime.setHours(time1.getHours() + hours);
+        newTime.setMinutes(time1.getMinutes() + minutesToAddFinal);
+        let newTime1 = newTime.toISOString();
+        console.log(appendTime);
+        console.log(newTime1.slice(11, 16));
+        return response.render("deleteORsuggest", {
+          title: request.body.title,
+          start: request.body.start,
+          end: request.body.end,
+          newStart: appendTime,
+          newEnd1: newTime1.slice(11, 16),
+        });
       }
     }
     try {
