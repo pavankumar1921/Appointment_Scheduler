@@ -15,7 +15,6 @@ const saltRounds = 10;
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 const { User, Appointment } = require("./models");
-const { start } = require("repl");
 // eslint-disable-next-line no-unused-vars
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
