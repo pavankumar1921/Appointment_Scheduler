@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vineeth-07/Appointment_Scheduler.git"
+    "url": "https://github.com/pavankumar1921/Appointment_Scheduler.git"
   },
   "lint-staged": {
     "*.js": [
@@ -20,7 +20,7 @@
       "prettier --write ."
     ]
   },
-  "author": "Vineeth",
+  "author": "Pavan",
   "license": "ISC",
   "devDependencies": {
     "cheerio": "^1.0.0-rc.12",
@@ -28,6 +28,7 @@
     "husky": "^8.0.1",
     "jest": "^29.2.0",
     "lint-staged": "^13.0.3",
+    "nodemailer": "^6.9.1",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "sequelize-cli": "^6.5.1",
