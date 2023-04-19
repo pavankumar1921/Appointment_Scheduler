@@ -10,7 +10,7 @@ const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const flash = require("connect-flash");
 const bcrypt = require("bcrypt");
-const forMail = require("nodemailer")
+const forMail = require("nodemailer");
 
 const saltRounds = 10;
 app.set("views", path.join(__dirname, "views"));
@@ -179,14 +179,14 @@ app.get(
 
 const transporter = forMail.createTransport({
   host: "smtp.gmail.com",
-  port:465,
-  secure:true,
-  service:"Gmail",
+  port: 465,
+  secure: true,
+  service: "Gmail",
   auth: {
     user: "pavankittu19@gmail.com",
-    pass: "xawntrvpmnkwcoha"
-  }
-})
+    pass: "xawntrvpmnkwcoha",
+  },
+});
 
 app.post(
   "/appointments",
@@ -319,19 +319,19 @@ app.post(
         userId: request.user.id,
       });
       const mailOptions = {
-          from: 'pavankittu19@gmail.com',
-          to: `${request.user.email}`,
-          subject: "Appointment Created",
-          html:`<b>Appointment created at${request.body.start}-${request.body.end}</b>`
-              };
-              transporter.sendMail(mailOptions, function(error, info){
-                  if (error) {
-                 console.log(error);
-                  } else {
-                    console.log('Email sent: ' + info.response);
-                    // do something useful
-                  }
-                });
+        from: "pavankittu19@gmail.com",
+        to: `${request.user.email}`,
+        subject: "Appointment Created",
+        html: `<b>Your Appointment for ${request.body.title} is scheduled at${request.body.start}-${request.body.end}</b>`,
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.messageId);
+          // do something useful
+        }
+      });
       return response.redirect("/appointment");
     } catch (error) {
       console.log(error);
